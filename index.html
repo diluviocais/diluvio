@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dilúvio</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#2b2a2c;--bg2:#363437;--bg3:#232224;--c:#e05a5a;--t:#f4f1f0;--m:#a9a3a5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t);font:18px/1.45 'EB Garamond',Garamond,Georgia,serif;min-height:100vh}
+button{font:inherit;cursor:pointer;color:var(--t);background:var(--bg2);border:2px solid var(--c);border-radius:999px;padding:6px 16px}
+button:hover,button.on{background:var(--c)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.logo{font-weight:700;font-size:clamp(34px,7vw,58px);letter-spacing:.04em;margin:0;position:relative;display:inline-block;z-index:0;padding:0 12px}
+.logo:after{content:"";position:absolute;left:-4px;right:-10px;bottom:4px;height:.28em;background:linear-gradient(90deg,transparent,var(--c) 8%,var(--c) 92%,transparent);transform:skewX(-24deg);opacity:.85;z-index:-1;border-radius:4px}
+header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 20px 0;max-width:1100px;margin:auto}
+header .logo{font-size:36px}
+#st{color:var(--m);font-size:14px;margin-left:auto}
+.br{display:block;width:100%;max-width:1100px;height:24px;margin:6px auto;padding:0 20px}
+.br path{stroke:var(--c);stroke-width:3;fill:none;stroke-linecap:round;opacity:.8}
+nav{display:flex;gap:8px;flex-wrap:wrap;max-width:1100px;margin:0 auto;padding:0 20px 10px}
+main{max-width:1100px;margin:auto;padding:0 20px 60px;display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px;align-items:start}
+.card{background:var(--bg2);border-radius:18px;padding:16px;border-left:5px solid var(--c)}
+.card.wide,.add,.mut{grid-column:1/-1}
+h2,h3{margin:0 0 10px;font-weight:700;color:var(--t)}
+h2{font-size:20px}
+h2:after{content:"";display:block;height:4px;width:64px;background:var(--c);border-radius:3px;margin-top:3px;transform:skewX(-24deg)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--m)}
+input,textarea{font:inherit;color:var(--t);background:var(--bg3);border:2px solid transparent;border-radius:10px;padding:7px 10px;width:100%}
+input:focus,textarea:focus{border-color:var(--c)}
+input[type=number]{-moz-appearance:textfield}
+textarea{min-height:90px;resize:vertical}
+.card.wide textarea{min-height:130px}
+.trkw{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.trkw>span{min-width:130px;font-size:14px}
+.trk{display:flex;gap:3px;flex-wrap:wrap}
+.trk b{font-size:24px;color:#555;cursor:pointer;user-select:none;line-height:1}
+.trk b.on{color:var(--c)}
+.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.eye{flex-direction:row;align-items:center;gap:8px;font-size:14px;color:var(--t)}
+.eye input{width:20px;height:20px;accent-color:var(--c)}
+.del{padding:2px 10px;border-color:#666}
+.add{justify-self:start}
+.fear{display:flex;align-items:center;gap:16px;font-size:44px;font-weight:700;color:var(--c)}
+.fear button{font-size:24px;width:44px;height:44px;padding:0}
+.mut,small{color:var(--m)}
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+#login p{margin:0;font-style:italic;font-size:24px;color:var(--m)}
+#login input{width:260px;text-align:center;background:none;border:0;border-bottom:2px solid var(--c);border-radius:0;font-size:26px}
+#login input.no{animation:sh .4s}
+@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#splash{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9;animation:fo .8s 2.4s forwards}
+#splash .logo{font-size:clamp(48px,12vw,110px);animation:ri 1.8s both}
+@keyframes ri{from{opacity:0;letter-spacing:.3em;filter:blur(8px)}to{opacity:1;letter-spacing:.04em;filter:none}}
+@keyframes fo{to{opacity:0;visibility:hidden}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important}}
+.pt{width:100%;max-width:340px;aspect-ratio:1;margin:auto;border:2px dashed var(--c);border-radius:14px;background:var(--bg3) center/cover;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;cursor:pointer;color:var(--m)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div id="login">
+  <p>diga seu nome</p>
+  <input id="code" autocomplete="off" spellcheck="false" aria-label="diga seu nome">
+</div>
+
+<div id="app" class="hide">
+  <header><h1 class="logo">DILÚVIO</h1><span id="st"></span><button id="out">Sair</button></header>
+  <svg class="br" viewBox="0 0 800 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12H800M70 12l14-9M70 12l14 9M190 12l-14-9M190 12l-14 9M330 12l14-9M330 12l14 9M470 12l-14-9M470 12l-14 9M610 12l14-9M610 12l14 9M740 12l-14-9M740 12l-14 9"/></svg>
+  <nav id="tabs"></nav>
+  <main id="main"></main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+// ====== COLE AQUI a configuração do seu projeto Firebase ======
+const CFG = {
+  apiKey: "AIzaSyAjbfZipbYFkn7WRgK1503h0JoxI86BoLc",
+  authDomain: "diluvio-959fe.firebaseapp.com",
+  projectId: "diluvio-959fe",
+  appId: "1:603625411889:web:c1cb7a73d400b51688cc10"
+};
+// ==============================================================
+
+const $ = s => document.querySelector(s);
+let db, R = {}, role, tab, code, P = {}, tm = {};
+let C = {}, G = {fear:0,quick:'',enemies:[],allies:[],notes:[]}, S = {fear:0,items:[]};
+
+// Campos: [chave, rótulo, tipo ('n' número, 't' texto longo), privado?]
+const IDN=[['nome','Nome'],['gen','Gênero (pronomes)'],['her','Herança'],['classe','Classe'],['sub','Subclasse'],['nv','Nível','n']];
+const TRA=[['agi','Agilidade','n'],['for','Força','n'],['acu','Acuidade','n'],['ins','Instinto','n'],['pre','Presença','n'],['con','Conhecimento','n']];
+const LIM=[['lmen','Dano Menor (a partir de)','n'],['lmaior','Dano Maior (a partir de)','n'],['lgrave','Dano Grave (a partir de)','n']];
+const ENM=[['nome','Nome'],['tipo','Tipo (Bruto, Líder, Horda…)'],['dif','Dificuldade','n'],['lim','Limiares (Maior/Grave)'],['atk','Ataque (bônus · alcance)'],['dano','Dano'],['carac','Características e Ações','t'],['medo','Ações de Medo','t'],['priv','Notas da mestra','t',1]];
+const ALI=[['nome','Nome'],['papel','Papel / relação'],['desc','Descrição e características','t'],['seg','Segredos da mestra','t',1]];
+const NOT=[['nome','Título'],['txt','Texto','t']];
+const TRK_ENM=[['pv','Pontos de Vida',8],['est','Estresse',6]];
+
+const E = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fld = (k,l,t,x='') => t=='t'
+  ? `<label>${l}<textarea data-k="${k}" ${x}></textarea></label>`
+  : `<label>${l}<input data-k="${k}" ${t=='n'?'type="number" inputmode="numeric"':''} ${x}></label>`;
+const trk = (k,l,n,x='') => `<div class="trkw"><span>${l}</span><div class="trk" data-k="${k}" data-max="${n}" ${x}></div></div>`;
+const sec = (h,F,cls='') => `<section class="card ${cls}"><h2>${h}</h2><div class="g">${F.map(a=>fld(...a)).join('')}</div></section>`;
+const area = (k,l) => `<section class="card wide"><h2>${l}</h2>${fld(k,'','t')}</section>`;
+
+const wep = (p,h) => `<section class="card"><h2>${h}</h2><div class="g">${[[p+'n','Nome'],[p+'a','Atributo e alcance'],[p+'d','Dados e tipo de dano']].map(a=>fld(...a)).join('')}</div>${fld(p+'h','Habilidade','t')}</section>`;
+const sheet = () =>
+  `<section class="card"><h2>Retrato</h2><div class="pt" id="pt" role="button" tabindex="0"></div><input type="file" id="pf" accept="image/*" class="hide"></section>` +
+  sec('Identidade',IDN) + sec('Atributos',TRA) +
+  `<section class="card"><h2>Evasão e Armadura</h2><div class="g">${fld('eva','Evasão','n')}${fld('arm','Armadura','n')}</div>${trk('slots','Espaços de armadura',12)}</section>` +
+  `<section class="card"><h2>Saúde e Dano</h2><div class="g">${LIM.map(a=>fld(...a)).join('')}</div>${trk('pv','PV',12)}${trk('pf','PF',12)}</section>` +
+  `<section class="card"><h2>Esperança</h2>${trk('esp','Esperança',6)}<p class="mut" style="margin:8px 0 0">Gaste 1 Ponto de Esperança para usar uma Experiência ou Prestar Ajuda.</p></section>` +
+  `<section class="card"><h2>Experiências</h2>${[1,2,3,4,5].map(n=>`<div class="g" style="grid-template-columns:1fr 70px;margin-bottom:8px">${fld('ex'+n,'')}${fld('exb'+n,'','n')}</div>`).join('')}</section>` +
+  `<section class="card"><h2>Ouro</h2>${trk('punh','Punhados',9)}${trk('bolsas','Bolsas',9)}${trk('bau','Baú',1)}</section>` +
+  `<section class="card"><h2>Armas ativas</h2>${trk('prof','Proficiência',6)}</section>` + wep('p1','Principal') + wep('p2','Secundária') +
+  `<section class="card"><h2>Armadura ativa</h2><div class="g">${[['arn','Nome'],['arl','Limiares base'],['arb','Armadura base','n']].map(a=>fld(...a)).join('')}</div>${fld('arh','Habilidade','t')}</section>` +
+  area('hab','Habilidades de classe') + area('inv','Inventário') + wep('i1','Arma no inventário') + wep('i2','Arma no inventário') +
+  area('orig','Perguntas de origem') + area('vinc','Vínculos') +
+  area('pat','Avanços por patamar (níveis 2–4, 5–7 e 8–10)') + area('hist','Histórico do personagem') + area('nota','Anotações');
+
+function list(l,F,T,btn){
+  return `<button class="add" data-add="${l}">+ ${btn}</button>` + G[l].map((x,i)=>{
+    const a = `data-l="${l}" data-i="${i}"`;
+    return `<section class="card"><div class="row"><label class="eye"><input type="checkbox" data-k="shown" ${a}> 👁 Mostrar pra jogadora</label><button class="del" data-del="${l}" data-i="${i}" aria-label="Apagar">✕</button></div>
+    <div class="g" style="grid-template-columns:1fr">${F.map(f=>fld(f[0],f[1]+(f[3]?' 🔒':''),f[2],a)).join('')}</div>${T.map(t=>trk(t[0],t[1],t[2],a)).join('')}</section>`;
+  }).join('') || '<p class="mut">Nada aqui ainda. Use o botão acima para criar.</p>';
+}
+
+const V = {
+  ficha: sheet,
+  pain: () => `<section class="card"><h2>Medo</h2><div class="fear"><button data-f="-1" aria-label="Menos">−</button><span id="fv">${G.fear||0}</span><button data-f="1" aria-label="Mais">+</button></div></section>
+    <section class="card wide"><h2>Notas rápidas (só você vê)</h2>${fld('quick','','t','data-g')}</section>`,
+  enm: () => list('enemies',ENM,TRK_ENM,'Novo adversário'),
+  ali: () => list('allies',ALI,[],'Novo aliado ou PNJ'),
+  not: () => list('notes',NOT,[],'Nova anotação'),
+  mural: () => `<section class="card"><h2>Medo da mestra</h2><div class="fear"><span>${S.fear||0}</span></div></section>` +
+    (S.items.length ? S.items.map(i=>`<section class="card"><small>${E(i.kind)}</small><h3>${E(i.name)}</h3>${i.f.map(([l,v])=>`<p style="margin:4px 0"><b>${E(l)}:</b> ${E(v)}</p>`).join('')}</section>`).join('') : '<p class="mut">A mestra ainda não revelou nada.</p>')
+};
+const TABS = {
+  p:[['ficha','Minha ficha'],['mural','Mural']],
+  m:[['pain','Painel'],['ficha','Ficha da jogadora'],['enm','Adversários'],['ali','Aliados'],['not','Caderno']]
+};
+
+const ob = e => e.dataset.l ? G[e.dataset.l][+e.dataset.i] : (e.dataset.g!=null ? G : C);
+const isG = e => e.dataset.l || e.dataset.g!=null;
+
+function hy(root=$('#main')){
+  root.querySelectorAll('[data-k]').forEach(e=>{
+    const v = ob(e)[e.dataset.k];
+    if(e.classList.contains('trk')){
+      const n = +v||0;
+      e.innerHTML = Array.from({length:+e.dataset.max},(_,j)=>`<b class="${j<n?'on':''}" data-n="${j+1}">✦</b>`).join('');
+    } else if(e.type=='checkbox') e.checked = !!v;
+    else if(e!==document.activeElement) e.value = v ?? '';
+  });
+  const p=$('#pt'); if(p){ p.style.backgroundImage=C.retrato?`url(${C.retrato})`:''; p.textContent=C.retrato?'':'Clique para enviar o retrato'; }
+}
+function render(){
+  $('#tabs').innerHTML = TABS[role].map(([k,l])=>`<button class="${k==tab?'on':''}" data-tab="${k}">${l}</button>`).join('');
+  $('#main').innerHTML = V[tab]();
+  hy();
+}
+
+const status = s => $('#st').textContent = s;
+function saveC(){
+  status('salvando…'); clearTimeout(tm.c);
+  tm.c = setTimeout(()=>{ const p=P; P={}; R.char.set(p,{merge:true}).then(()=>status('✓ salvo')).catch(()=>status('erro ao salvar')); },600);
+}
+const share = () => ({
+  fear: G.fear||0,
+  items: [['enemies','Adversário',ENM,TRK_ENM],['allies','Aliado',ALI,[]],['notes','Revelado',NOT,[]]].flatMap(([l,kind,F,T])=>
+    G[l].filter(x=>x.shown).map(x=>{
+      const f = F.filter(a=>!a[3] && a[0]!='nome' && x[a[0]]).map(a=>[a[1],String(x[a[0]])]);
+      T.forEach(([k,lb,m])=>{ if(x[k]) f.push([lb,`${x[k]} de ${m} marcados`]); });
+      return {kind, name:x.nome||'', f};
+    }))
+});
+function saveG(){
+  status('salvando…'); clearTimeout(tm.g);
+  tm.g = setTimeout(async()=>{
+    try{ await R.gm.set(G); await R.sh.set(share()); status('✓ salvo'); }catch(e){ status('erro ao salvar'); }
+  },700);
+}
+function setVal(el,v){
+  ob(el)[el.dataset.k] = v;
+  if(isG(el)) saveG(); else { P[el.dataset.k]=v; saveC(); }
+}
+
+document.addEventListener('input', e=>{
+  const t=e.target; if(!t.dataset || !t.dataset.k) return;
+  setVal(t, t.type=='checkbox' ? t.checked : (t.type=='number' && t.value!=='' ? +t.value : t.value));
+});
+document.addEventListener('click', e=>{
+  const t=e.target;
+  const b=t.closest('.trk b');
+  if(b){ const w=b.parentNode, n=+b.dataset.n; setVal(w,(+ob(w)[w.dataset.k]||0)==n?n-1:n); hy(w.parentNode); return; }
+  if(t.dataset.tab){ tab=t.dataset.tab; render(); return; }
+  if(t.dataset.f){ G.fear=Math.max(0,(G.fear||0)+ +t.dataset.f); $('#fv').textContent=G.fear; saveG(); return; }
+  if(t.dataset.add){ G[t.dataset.add].push({}); saveG(); render(); return; }
+  if(t.dataset.del){ if(confirm('Apagar este item?')){ G[t.dataset.del].splice(+t.dataset.i,1); saveG(); render(); } return; }
+  if(t.id=='pt'){ $('#pf').click(); return; }
+  if(t.id=='out'){ try{localStorage.removeItem('dil')}catch(_){} location.reload(); }
+});
+
+async function enter(r){
+  if(CFG.apiKey=='COLE_AQUI'){ alert('Falta colar a configuração do Firebase no index.html.'); return; }
+  try{
+    if(!db){ firebase.initializeApp(CFG); db = firebase.firestore(); }
+    role=r;
+    const d = n => db.doc(`mesas/principal/dados/${n}`);
+    R = {char:d('char'), gm:d('gm'), sh:d('shared')};
+    if(r=='m'){
+      const g = await R.gm.get();
+      if(g.exists) G = {fear:0,quick:'',enemies:[],allies:[],notes:[],...g.data()};
+    }
+    R.char.onSnapshot(s=>{
+      if(s.metadata.hasPendingWrites) return;
+      C = {...(s.data()||{}), ...P};
+      if(tab=='ficha') hy();
+    });
+    if(r=='p') R.sh.onSnapshot(s=>{
+      S = {fear:0,items:[],...(s.data()||{})};
+      if(tab=='mural') render();
+    });
+    if(r=='p'){ document.body.insertAdjacentHTML('beforeend','<div id="splash"><h1 class="logo">DILÚVIO</h1></div>'); setTimeout(()=>$('#splash').remove(),3400); }
+    $('#login').classList.add('hide'); $('#app').classList.remove('hide');
+    tab = TABS[r][0][0]; render(); status('');
+  }catch(err){ alert('Não consegui conectar: '+err.message); }
+}
+const norm = s => s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+$('#code').addEventListener('keydown',e=>{
+  if(e.key!='Enter') return;
+  const v=norm(e.target.value), r = v=='amora' ? 'p' : v=='abobora' ? 'm' : 0;
+  if(r) enter(r);
+  else { e.target.value=''; e.target.classList.remove('no'); void e.target.offsetWidth; e.target.classList.add('no'); }
+});
+document.addEventListener('change',e=>{
+  if(e.target.id!='pf' || !e.target.files[0]) return;
+  const im=new Image();
+  im.onload=()=>{
+    const c=document.createElement('canvas'); c.width=c.height=400;
+    const m=Math.min(im.width,im.height);
+    c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,400,400);
+    C.retrato=P.retrato=c.toDataURL('image/jpeg',.85); saveC(); hy();
+  };
+  im.src=URL.createObjectURL(e.target.files[0]);
+});
+</script>
+</body>
+</html>
