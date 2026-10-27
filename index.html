@@ -58,6 +58,27 @@ textarea{min-height:90px;resize:vertical}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important}}
 .pt{width:100%;max-width:340px;aspect-ratio:1;margin:auto;border:2px dashed var(--c);border-radius:14px;background:var(--bg3) center/cover;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;cursor:pointer;color:var(--m)}
 .hide{display:none}
+.top{display:grid;grid-template-columns:minmax(150px,250px) 1fr;gap:18px}
+.id{display:grid;grid-template-columns:2fr 1.3fr .7fr .9fr;gap:10px;align-content:start}
+.id>label:nth-child(6){grid-column:2/4}
+.id input,.lim input{text-align:center}
+hr.l{border:0;border-top:3px double var(--m);margin:14px 0}
+.lim{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lim>span{color:var(--m);margin-right:6px}
+.lim b{border:2px solid var(--t);padding:2px 10px;text-align:center;line-height:1.1;font-weight:500}
+.lim b small{display:block;font-size:12px;font-weight:400}
+.lim label{width:68px}
+.bot{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-top:14px}
+.bx{width:96px}
+.bx input,.at input{font-size:28px;text-align:center;font-weight:500}
+.bx label,.at label{text-align:center}
+.bx2{display:flex;gap:6px;align-items:center}.bx2 input{width:66px;font-size:26px;text-align:center}
+.attrs{display:grid;grid-template-columns:repeat(6,minmax(66px,1fr));gap:8px;flex:1 1 440px}
+.dots{padding:0 9px;line-height:1.2;border-color:#666;border-radius:8px}
+.hr{display:grid;grid-template-columns:minmax(110px,1fr) 4fr;gap:8px;margin-bottom:8px}
+.card.wide .hr textarea{min-height:64px}
+.hr>label:first-child textarea{text-align:center;font-weight:500}
+@media(max-width:700px){.top,.hr{grid-template-columns:1fr}.id{grid-template-columns:1fr 1fr}.id>label:nth-child(n){grid-column:auto}}
 </style>
 </head>
 <body>
@@ -102,24 +123,27 @@ const E = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;',
 const fld = (k,l,t,x='') => t=='t'
   ? `<label>${l}<textarea data-k="${k}" ${x}></textarea></label>`
   : `<label>${l}<input data-k="${k}" ${t=='n'?'type="number" inputmode="numeric"':''} ${x}></label>`;
-const trk = (k,l,n,x='') => `<div class="trkw"><span>${l}</span><div class="trk" data-k="${k}" data-max="${n}" ${x}></div></div>`;
+const trk = (k,l,n,x='') => `<div class="trkw"><span>${l}</span><div class="trk" data-k="${k}" data-max="${n}" ${x}></div><button class="dots" aria-label="Alterar quantidade máxima" title="Alterar quantidade máxima">⋯</button></div>`;
 const sec = (h,F,cls='') => `<section class="card ${cls}"><h2>${h}</h2><div class="g">${F.map(a=>fld(...a)).join('')}</div></section>`;
 const area = (k,l) => `<section class="card wide"><h2>${l}</h2>${fld(k,'','t')}</section>`;
 
 const wep = (p,h) => `<section class="card"><h2>${h}</h2><div class="g">${[[p+'n','Nome'],[p+'a','Atributo e alcance'],[p+'d','Dados e tipo de dano']].map(a=>fld(...a)).join('')}</div>${fld(p+'h','Habilidade','t')}</section>`;
+const rows = (p,h,n0) => { const n = C[p+'_cnt'] ?? n0; return `<section class="card wide"><h2>${h}</h2>${Array.from({length:n},(_,i)=>`<div class="hr">${fld(p+i+'n','','t')}${fld(p+i+'d','','t')}</div>`).join('')}<button data-rowadd="${p}:${n0}">+ linha</button> <button class="del" data-rowdel="${p}:${n0}">− última</button></section>`; };
 const sheet = () =>
-  `<section class="card"><h2>Retrato</h2><div class="pt" id="pt" role="button" tabindex="0"></div><input type="file" id="pf" accept="image/*" class="hide"></section>` +
-  sec('Identidade',IDN) + sec('Atributos',TRA) +
-  `<section class="card"><h2>Evasão e Armadura</h2><div class="g">${fld('eva','Evasão','n')}${fld('arm','Armadura','n')}</div>${trk('slots','Espaços de armadura',12)}</section>` +
-  `<section class="card"><h2>Saúde e Dano</h2><div class="g">${LIM.map(a=>fld(...a)).join('')}</div>${trk('pv','PV',12)}${trk('pf','PF',12)}</section>` +
-  `<section class="card"><h2>Esperança</h2>${trk('esp','Esperança',6)}<p class="mut" style="margin:8px 0 0">Gaste 1 Ponto de Esperança para usar uma Experiência ou Prestar Ajuda.</p></section>` +
+  `<section class="card wide"><div class="top"><div><div class="pt" id="pt" role="button" tabindex="0"></div><input type="file" id="pf" accept="image/*" class="hide"></div>
+  <div class="id">${[['nome','Nome'],['classe','Classe'],['nv','Nível','n'],['dest','Núm. Destino','n'],['her','Herança'],['sub','Subclasse']].map(a=>fld(...a)).join('')}</div></div>
+  <hr class="l">
+  <div class="lim"><span>Limiar de dano</span><b>Dano Menor<small>−1 PV</small></b>&gt;${fld('lmaior','','n')}&gt;<b>Dano Maior<small>−2 PV</small></b>&gt;${fld('lgrave','','n')}&gt;<b>Dano Grave<small>−3 PV</small></b></div>
+  ${trk('pv','Pontos de Vida (PV)',6)}${trk('pf','Pontos de Fadiga (PF)',6)}
+  <hr class="l">${trk('esp','Esperança',6)}
+  <div class="bot"><div class="bx">${fld('eva','Evasão','n')}</div>
+  <div><small>Armadura</small><div class="bx2"><input type="number" inputmode="numeric" data-k="arm" aria-label="Armadura">&gt;<input type="number" inputmode="numeric" data-k="arm2" aria-label="Armadura nova"></div>${trk('pa','PA',6)}</div>
+  <div class="attrs at">${TRA.map(a=>fld(...a)).join('')}</div></div></section>` +
   `<section class="card"><h2>Experiências</h2>${[1,2,3,4,5].map(n=>`<div class="g" style="grid-template-columns:1fr 70px;margin-bottom:8px">${fld('ex'+n,'')}${fld('exb'+n,'','n')}</div>`).join('')}</section>` +
   `<section class="card"><h2>Ouro</h2>${trk('punh','Punhados',9)}${trk('bolsas','Bolsas',9)}${trk('bau','Baú',1)}</section>` +
   `<section class="card"><h2>Armas ativas</h2>${trk('prof','Proficiência',6)}</section>` + wep('p1','Principal') + wep('p2','Secundária') +
   `<section class="card"><h2>Armadura ativa</h2><div class="g">${[['arn','Nome'],['arl','Limiares base'],['arb','Armadura base','n']].map(a=>fld(...a)).join('')}</div>${fld('arh','Habilidade','t')}</section>` +
-  area('hab','Habilidades de classe') + area('inv','Inventário') + wep('i1','Arma no inventário') + wep('i2','Arma no inventário') +
-  area('orig','Perguntas de origem') + area('vinc','Vínculos') +
-  area('pat','Avanços por patamar (níveis 2–4, 5–7 e 8–10)') + area('hist','Histórico do personagem') + area('nota','Anotações');
+  rows('anc','Habilidades de ancestralidade/comunidade',4) + rows('hab','Habilidades de classe',4) + rows('inv','Inventário',6) + area('nota','Anotações');
 
 function list(l,F,T,btn){
   return `<button class="add" data-add="${l}">+ ${btn}</button>` + G[l].map((x,i)=>{
@@ -151,8 +175,8 @@ function hy(root=$('#main')){
   root.querySelectorAll('[data-k]').forEach(e=>{
     const v = ob(e)[e.dataset.k];
     if(e.classList.contains('trk')){
-      const n = +v||0;
-      e.innerHTML = Array.from({length:+e.dataset.max},(_,j)=>`<b class="${j<n?'on':''}" data-n="${j+1}">✦</b>`).join('');
+      const mx = +ob(e)[e.dataset.k+'_max'] || +e.dataset.max, n = Math.min(+v||0,mx);
+      e.innerHTML = Array.from({length:mx},(_,j)=>`<b class="${j<n?'on':''}" data-n="${j+1}">✦</b>`).join('');
     } else if(e.type=='checkbox') e.checked = !!v;
     else if(e!==document.activeElement) e.value = v ?? '';
   });
@@ -174,7 +198,7 @@ const share = () => ({
   items: [['enemies','Adversário',ENM,TRK_ENM],['allies','Aliado',ALI,[]],['notes','Revelado',NOT,[]]].flatMap(([l,kind,F,T])=>
     G[l].filter(x=>x.shown).map(x=>{
       const f = F.filter(a=>!a[3] && a[0]!='nome' && x[a[0]]).map(a=>[a[1],String(x[a[0]])]);
-      T.forEach(([k,lb,m])=>{ if(x[k]) f.push([lb,`${x[k]} de ${m} marcados`]); });
+      T.forEach(([k,lb,m])=>{ if(x[k]) f.push([lb,`${x[k]} de ${x[k+'_max']||m} marcados`]); });
       return {kind, name:x.nome||'', f};
     }))
 });
@@ -202,6 +226,14 @@ document.addEventListener('click', e=>{
   if(t.dataset.add){ G[t.dataset.add].push({}); saveG(); render(); return; }
   if(t.dataset.del){ if(confirm('Apagar este item?')){ G[t.dataset.del].splice(+t.dataset.i,1); saveG(); render(); } return; }
   if(t.id=='pt'){ $('#pf').click(); return; }
+  if(t.classList.contains('dots')){
+    const w=t.closest('.trkw').querySelector('.trk'), o=ob(w), k=w.dataset.k, cur=+o[k+'_max']||+w.dataset.max;
+    const v=parseInt(prompt('Quantidade máxima:',cur),10);
+    if(v>=1 && v<=30){ o[k+'_max']=v; if(isG(w)) saveG(); else { P[k+'_max']=v; saveC(); } if((+o[k]||0)>v) setVal(w,v); hy(w.parentNode); }
+    return;
+  }
+  const ra=t.dataset.rowadd||t.dataset.rowdel;
+  if(ra){ const [p,n0]=ra.split(':'), n=C[p+'_cnt']??+n0, v=Math.max(1,n+(t.dataset.rowadd?1:-1)); C[p+'_cnt']=P[p+'_cnt']=v; saveC(); render(); return; }
   if(t.id=='out'){ try{localStorage.removeItem('dil')}catch(_){} location.reload(); }
 });
 
